@@ -36,5 +36,9 @@ Route::prefix('v1')->group(function () {
         // Course Enrollment & Lessons
         Route::post('/courses/{course}/enroll', [CourseController::class, 'enroll']);
         Route::get('/courses/{course}/lessons', [CourseController::class, 'lessons']);
+
+        // Course Quizzes
+        Route::get('/courses/{course}/quiz', [\App\Http\Controllers\Api\V1\QuizController::class, 'show']);
+        Route::post('/courses/{course}/quiz/submit', [\App\Http\Controllers\Api\V1\QuizController::class, 'submit']);
     });
 });

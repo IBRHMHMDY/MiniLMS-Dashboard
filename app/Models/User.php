@@ -55,4 +55,9 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->belongsToMany(Course::class, 'enrollments')->withTimestamps();
     }
+
+    public function quizAttempts(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
 }
