@@ -18,6 +18,13 @@ class Course extends Model
         'description',
         'price',
         'image_path',
+        'is_free',
+        'price',
+    ];
+
+    protected $casts = [
+        'is_free' => 'boolean', // 👈 لضمان تحويله دائماً لـ true/false
+        'price' => 'decimal:2', // 👈 للحفاظ على دقة الأرقام المالية
     ];
 
     public function instructor(): BelongsTo

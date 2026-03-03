@@ -34,8 +34,10 @@ Route::prefix('v1')->group(function () {
         Route::put('/profile', [ProfileController::class, 'update']);
 
         // Course Enrollment & Lessons
+        Route::get('/my-courses', [CourseController::class, 'myCourses']);
         Route::post('/courses/{course}/enroll', [CourseController::class, 'enroll']);
         Route::get('/courses/{course}/lessons', [CourseController::class, 'lessons']);
+        Route::post('/lessons/{lesson}/toggle-completion', [\App\Http\Controllers\Api\V1\CourseController::class, 'toggleLessonCompletion']);
 
         // Course Quizzes
         Route::get('/courses/{course}/quiz', [\App\Http\Controllers\Api\V1\QuizController::class, 'show']);

@@ -18,8 +18,25 @@ class Lesson extends Model
         'order_number',
     ];
 
+    // هذا سيقوم بإضافة حقل is_completed في الـ JSON تلقائياً
+    protected $appends = ['is_completed'];
+
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function usersWhoCompleted()
+    {
+        return $this->belongsToMany(User::class, 'lesson_user')->withTimestamps();
+    }
+
+    public function getIsCompletedAttribute(): bool
+    {
+        if (! auth()->check()) {
+            return false;
+        }
+
+        return $this->usersWhoCompleted()->where('user_id', auth()->id())->exists();
     }
 }

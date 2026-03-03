@@ -65,8 +65,8 @@ class QuizForm
                                         ->columnSpan(1),
                                 ])
                                 ->columns(4)
-                                ->defaultItems(4) // افتراضياً 4 خيارات لكل سؤال
-                                ->addActionLabel('إضافة خيار جديد'),
+                                ->defaultItems(4), // افتراضياً 4 خيارات لكل سؤال
+                            // ->addActionLabel('إضافة خيار جديد'),
                         ])
                         ->addActionLabel('إضافة سؤال جديد')
                         ->collapsible() // لجعل الأسئلة قابلة للطي لترتيب الشاشة
