@@ -12,9 +12,6 @@ class Answer extends Model
 
     protected $fillable = ['question_id', 'answer_text', 'is_correct'];
 
-    // إخفاء حقل is_correct عند إرجاع البيانات في الـ API لمنع الغش في الموبايل
-    protected $hidden = ['is_correct', 'created_at', 'updated_at'];
-
     public function question(): BelongsTo
     {
         return $this->belongsTo(Question::class);

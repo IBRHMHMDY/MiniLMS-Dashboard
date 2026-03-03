@@ -60,4 +60,18 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(QuizAttempt::class);
     }
+
+    public function completedLessons()
+    {
+        return $this->belongsToMany(Lesson::class, 'lesson_user')->withTimestamps();
+    }
+
+    /**
+     * الكورسات التي اشترك فيها الطالب
+     */
+    public function courses()
+    {
+        // نفترض أن اسم الجدول الوسيط هو course_user
+        return $this->belongsToMany(Course::class, 'course_user')->withTimestamps();
+    }
 }

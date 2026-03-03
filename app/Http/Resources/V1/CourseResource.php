@@ -13,6 +13,7 @@ class CourseResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
+            'is_free' => (bool) $this->is_free,
             'price' => (float) $this->price,
             'image_url' => $this->image_path ? asset('storage/'.$this->image_path) : null,
             'instructor' => new UserResource($this->whenLoaded('instructor')),

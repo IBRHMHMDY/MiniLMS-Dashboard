@@ -8,7 +8,6 @@ use App\Http\Resources\V1\LessonResource;
 use App\Models\Course;
 use App\Services\CourseService;
 use App\Traits\ApiResponseTrait;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -43,21 +42,41 @@ class CourseController extends Controller
         );
     }
 
-    public function enroll(Request $request, Course $course): JsonResponse
+    /**
+     * الاشتراك في كورس
+     */
+    public function enroll(Course $course)
     {
-        try {
-            $data = $this->courseService->enrollUser($request->user(), $course);
+        $user = auth()->user();
 
-            return $this->successResponse($data, 'Successfully enrolled in the course', 201);
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), ['course_id' => [$e->getMessage()]], 422);
+        // التحقق مما إذا كان مشتركاً بالفعل
+        if ($user->courses()->where('course_id', $course->id)->exists()) {
+            return $this->errorResponse('أنت مشترك بالفعل في هذا الكورس', 400);
         }
+
+        // 👈 اللمسة المعمارية: التحقق من الدفع
+        if (! $course->is_free) {
+            // كود 402 يعني Payment Required في معايير الـ HTTP
+            return response()->json([
+                'status' => 'payment_required',
+                'message' => 'هذا الكورس مدفوع ويتطلب إتمام عملية الدفع.',
+                'data' => [
+                    'course_id' => $course->id,
+                    'price' => $course->price,
+                ],
+            ], 402);
+        }
+
+        // إذا كان مجانياً، يتم التسجيل فوراً
+        $user->courses()->attach($course->id);
+
+        return $this->successResponse(null, 'تم الاشتراك في الكورس المجاني بنجاح');
     }
 
     public function lessons(Request $request, Course $course): JsonResponse
     {
         // التحقق من صلاحية رؤية الدروس (يجب أن يكون مشتركاً)
-        $isEnrolled = $request->user()->enrollments()->where('course_id', $course->id)->exists();
+        $isEnrolled = $request->user()->courses()->where('course_id', $course->id)->exists();
 
         if (! $isEnrolled) {
             return $this->errorResponse('Unauthorized. You must enroll in the course first.', [], 403);
@@ -69,5 +88,30 @@ class CourseController extends Controller
             LessonResource::collection($lessons),
             'Lessons retrieved successfully'
         );
+    }
+
+    /**
+     * تغيير حالة الدروس
+     */
+    public function toggleLessonCompletion(\App\Models\Lesson $lesson)
+    {
+        $user = auth()->user();
+        // دالة toggle ستقوم بإضافة الدرس إذا لم يكن موجوداً، أو حذفه إذا كان موجوداً
+        $user->completedLessons()->toggle($lesson->id);
+
+        return $this->successResponse(null, 'تم تحديث حالة الدرس بنجاح');
+    }
+
+    /**
+     * جلب الكورسات التي اشترك فيها الطالب الحالي
+     */
+    public function myCourses()
+    {
+        $user = auth()->user();
+
+        // جلب كورسات الطالب مع عدد الدروس
+        $myCourses = $user->courses()->withCount('lessons')->get();
+
+        return $this->successResponse($myCourses, 'تم جلب دوراتك بنجاح');
     }
 }

@@ -26,9 +26,15 @@ class QuizController extends Controller
     public function show(int $courseId): JsonResponse
     {
         try {
-            $quiz = $this->quizService->cloneCourseQuiz($courseId);
+            $userId = auth()->id(); // 👈 جلب ID الطالب الحالي
 
-            // بفضل الـ $hidden في الـ Model، الإجابات الصحيحة لن تظهر هنا
+            // 👈 تمرير الـ userId كمعامل ثاني للدالة
+            $quiz = $this->quizService->cloneCourseQuiz($courseId, $userId);
+
+            $quiz->questions->each(function ($question) {
+                $question->answers->makeHidden(['is_correct', 'created_at', 'updated_at']);
+            });
+
             return $this->successResponse($quiz, 'تم جلب بيانات الاختبار بنجاح');
 
         } catch (Exception $e) {

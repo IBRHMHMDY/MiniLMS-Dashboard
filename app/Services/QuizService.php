@@ -10,14 +10,23 @@ use Exception;
 class QuizService
 {
     /**
-     * جلب بيانات الاختبار الخاص بالكورس
+     * جلب بيانات الاختبار الخاص بالكورس بعد التحقق من اكتمال الدروس
      */
-    public function cloneCourseQuiz(int $courseId)
+    public function cloneCourseQuiz(int $courseId, int $userId) // 👈 إضافة userId
     {
         $course = Course::findOrFail($courseId);
 
-        $quiz = $course->quiz()->with('questions.answers')->first();
+        // 👈 التحقق من إكمال الدروس
+        $totalLessons = $course->lessons()->count();
+        $completedLessons = $course->lessons()->whereHas('usersWhoCompleted', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })->count();
 
+        if ($totalLessons > 0 && $completedLessons < $totalLessons) {
+            throw new Exception("يجب إكمال جميع الدروس أولاً ($completedLessons/$totalLessons) قبل دخول الاختبار.");
+        }
+
+        $quiz = $course->quiz()->with('questions.answers')->first();
         if (! $quiz) {
             throw new Exception('لا يوجد اختبار متاح لهذا الكورس حالياً.');
         }
@@ -30,7 +39,7 @@ class QuizService
      */
     public function evaluateAndSaveAttempt(int $courseId, int $userId, array $submittedAnswers)
     {
-        $quiz = $this->cloneCourseQuiz($courseId);
+        $quiz = $this->cloneCourseQuiz($courseId, $userId);
         $questionsCount = $quiz->questions()->count();
 
         if ($questionsCount === 0) {
