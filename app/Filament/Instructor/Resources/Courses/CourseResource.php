@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Filament\Resources\Courses;
+namespace App\Filament\Instructor\Resources\Courses;
 
-use App\Filament\Resources\Courses\Pages\CreateCourse;
-use App\Filament\Resources\Courses\Pages\EditCourse;
-use App\Filament\Resources\Courses\Pages\ListCourses;
-use App\Filament\Resources\Courses\Schemas\CourseForm;
-use App\Filament\Resources\Courses\Tables\CoursesTable;
+use App\Filament\Instructor\Resources\CourseResource\RelationManagers\LessonsRelationManager;
+use App\Filament\Instructor\Resources\Courses\Pages\CreateCourse;
+use App\Filament\Instructor\Resources\Courses\Pages\EditCourse;
+use App\Filament\Instructor\Resources\Courses\Pages\ListCourses;
+use App\Filament\Instructor\Resources\Courses\Schemas\CourseForm;
+use App\Filament\Instructor\Resources\Courses\Tables\CoursesTable;
 use App\Models\Course;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -33,22 +34,10 @@ class CourseResource extends Resource
         return CoursesTable::configure($table);
     }
 
-    // تطبيق عزل البيانات: المدرب يرى كورساته فقط
-    // public static function getEloquentQuery(): Builder
-    // {
-    //     $query = parent::getEloquentQuery();
-
-    //     if (auth()->user()->hasRole('instructor')) {
-    //         $query->where('instructor_id', auth()->id());
-    //     }
-
-    //     return $query;
-    // }
-
     public static function getRelations(): array
     {
         return [
-            //
+            LessonsRelationManager::class,
         ];
     }
 
@@ -59,5 +48,11 @@ class CourseResource extends Resource
             'create' => CreateCourse::route('/create'),
             'edit' => EditCourse::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        // حصر البيانات: جلب الكورسات التي يملكها المدرب المسجل دخوله حالياً فقط
+        return parent::getEloquentQuery()->where('instructor_id', auth()->id());
     }
 }
