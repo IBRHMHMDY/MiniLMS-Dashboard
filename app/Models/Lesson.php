@@ -26,6 +26,11 @@ class Lesson extends Model
         return $this->belongsTo(Course::class);
     }
 
+    public function quiz()
+    {
+        return $this->hasMany(Quiz::class);
+    }
+
     public function usersWhoCompleted()
     {
         return $this->belongsToMany(User::class, 'lesson_user')->withTimestamps();

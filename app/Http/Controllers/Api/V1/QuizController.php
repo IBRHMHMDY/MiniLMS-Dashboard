@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SubmitQuizRequest;
+use App\Http\Requests\Api\V1\SubmitQuizRequest;
 use App\Services\QuizService;
 use App\Traits\ApiResponseTrait;
 use Exception;
@@ -45,18 +45,29 @@ class QuizController extends Controller
     /**
      * استلام إجابات الطالب وتقييمها
      */
-    public function submit(SubmitQuizRequest $request, int $courseId): JsonResponse
+    public function submit(SubmitQuizRequest $request, $courseId): JsonResponse
     {
         try {
-            $userId = auth()->id();
-            $answers = $request->validated()['answers'];
+            // استدعاء الـ Service layer
+            $result = $this->quizService->submitAndGradeQuiz(
+                $request->user()->id,
+                $courseId,
+                $request->validated('answers')
+            );
 
-            $result = $this->quizService->evaluateAndSaveAttempt($courseId, $userId, $answers);
+            // إرجاع Response مطابق للـ Project Bible
+            return response()->json([
+                'success' => true,
+                'data' => $result,
+            ]);
 
-            return $this->successResponse($result, 'تم تقييم الاختبار بنجاح');
-
-        } catch (Exception $e) {
-            return $this->errorResponse($e->getMessage(), 400);
+        } catch (\Exception $e) {
+            // تسجيل الخطأ داخلياً (يفضل استخدام Log::error)
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء معالجة الاختبار.',
+                'errors' => ['server' => [$e->getMessage()]],
+            ], 500);
         }
     }
 }

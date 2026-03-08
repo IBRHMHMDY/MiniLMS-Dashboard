@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Auth\LoginRequest;
 use App\Http\Requests\V1\Auth\RegisterRequest;
-use App\Http\Resources\V1\UserResource;
+use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
@@ -39,7 +39,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->validated('email'))->first();
 
         if (! $user || ! Hash::check($request->validated('password'), $user->password)) {
-            return $this->errorResponse('Invalid credentials', ['email' => ['These credentials do not match our records.']], 401);
+            return $this->errorResponse('بيانات الدخول غير صحيحة', 401);
         }
 
         $token = $user->createToken('mobile_app')->plainTextToken;

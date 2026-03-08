@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\V1\CourseResource;
-use App\Http\Resources\V1\LessonResource;
+use App\Http\Resources\Api\V1\CourseResource;
+use App\Http\Resources\Api\V1\LessonResource;
 use App\Models\Course;
 use App\Services\CourseService;
 use App\Traits\ApiResponseTrait;
@@ -32,14 +32,20 @@ class CourseController extends Controller
         );
     }
 
-    public function show(Course $course): JsonResponse
+    public function show($id)
     {
-        $course->load(['instructor', 'category']);
+        $course = Course::with([
+            'instructor',
+            'category',
+            'lessons.quiz.questions.answers', // اختبارات الدروس
+            'quiz.questions.answers',          // الاختبار النهائي للكورس
+        ])->findOrFail($id);
 
-        return $this->successResponse(
-            new CourseResource($course),
-            'Course details retrieved successfully'
-        );
+        return response()->json([
+            'success' => true,
+            'message' => 'Course details retrieved successfully',
+            'data' => new CourseResource($course),
+        ]);
     }
 
     /**
@@ -70,7 +76,7 @@ class CourseController extends Controller
         // إذا كان مجانياً، يتم التسجيل فوراً
         $user->courses()->attach($course->id);
 
-        return $this->successResponse(null, 'تم الاشتراك في الكورس المجاني بنجاح');
+        return $this->successResponse([], 'تم الاشتراك في الكورس المجاني بنجاح');
     }
 
     public function lessons(Request $request, Course $course): JsonResponse

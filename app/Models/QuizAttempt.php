@@ -4,21 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class QuizAttempt extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'quiz_id', 'score', 'passed'];
+    protected $fillable = [
+        'user_id',
+        'course_id',
+        'total_questions',
+        'correct_answers',
+        'score',
+        'is_passed',
+    ];
 
-    public function user(): BelongsTo
+    protected $casts = [
+        'is_passed' => 'boolean',
+        'score' => 'float',
+    ];
+
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function quiz(): BelongsTo
+    public function course()
     {
-        return $this->belongsTo(Quiz::class);
+        return $this->belongsTo(Course::class);
     }
 }

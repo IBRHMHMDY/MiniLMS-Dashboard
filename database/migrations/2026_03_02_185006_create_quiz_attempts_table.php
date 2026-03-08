@@ -11,9 +11,11 @@ return new class extends Migration
         Schema::create('quiz_attempts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('quiz_id')->constrained('quizzes')->cascadeOnDelete();
-            $table->decimal('score', 5, 2); // النتيجة مثلاً 85.50
-            $table->boolean('passed'); // هل اجتاز الاختبار؟
+            $table->foreignId('course_id')->constrained()->cascadeOnDelete();
+            $table->integer('total_questions');
+            $table->integer('correct_answers');
+            $table->decimal('score', 5, 2); // نسبة النجاح (مثال: 85.50)
+            $table->boolean('is_passed');
             $table->timestamps();
         });
     }

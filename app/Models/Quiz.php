@@ -11,11 +11,16 @@ class Quiz extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['course_id', 'title', 'pass_mark'];
+    protected $fillable = ['course_id', 'lesson_id', 'title', 'pass_mark'];
 
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function lesson()
+    {
+        return $this->belongsTo(Lesson::class);
     }
 
     public function questions(): HasMany

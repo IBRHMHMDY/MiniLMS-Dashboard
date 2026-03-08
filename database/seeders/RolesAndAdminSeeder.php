@@ -12,15 +12,15 @@ class RolesAndAdminSeeder extends Seeder
     public function run(): void
     {
         // 1. إنشاء الأدوار
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'instructor']);
-        Role::create(['name' => 'student']);
+        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'instructor', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'student', 'guard_name' => 'web']);
 
         // 2. إنشاء حساب مدير النظام (Super Admin)
         $admin = User::firstOrCreate(
             ['email' => 'admin@minilms.com'],
             [
-                'name' => 'Super Admin',
+                'name' => 'Manager',
                 'password' => Hash::make('password'),
             ]
         );
