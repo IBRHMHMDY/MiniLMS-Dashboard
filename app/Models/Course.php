@@ -8,6 +8,39 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * @property int $id
+ * @property int $instructor_id
+ * @property int $category_id
+ * @property string $title
+ * @property string $description
+ * @property bool $is_free
+ * @property numeric $price
+ * @property string|null $image_path
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Category $category
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Enrollment> $enrollments
+ * @property-read int|null $enrollments_count
+ * @property-read \App\Models\User $instructor
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Lesson> $lessons
+ * @property-read int|null $lessons_count
+ * @property-read \App\Models\Quiz|null $quiz
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereImagePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereInstructorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereIsFree($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Course whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Course extends Model
 {
     use HasFactory;
