@@ -15,7 +15,6 @@ class CreateCourse extends CreateRecord
     public function getBreadcrumbs(): array
     {
         return [
-            url('/instructor') => 'Dashboard',
             $this->getResource()::getUrl('index') => 'My Courses',
             'Add New Course',
         ];

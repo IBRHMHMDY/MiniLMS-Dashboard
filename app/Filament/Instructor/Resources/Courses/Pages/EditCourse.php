@@ -14,7 +14,6 @@ class EditCourse extends EditRecord
     public function getBreadcrumbs(): array
     {
         return [
-            url('/instructor/courses') => 'Dashboard',
             $this->getResource()::getUrl('index') => 'My Courses',
             'Edit Course',
         ];

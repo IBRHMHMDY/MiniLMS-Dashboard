@@ -3,7 +3,7 @@
 namespace App\Filament\Instructor\Resources\Courses;
 
 use App\Filament\Instructor\Resources\CourseResource\Pages\CreateCourse;
-use App\Filament\Instructor\Resources\CourseResource\Pages\EditCourse as InstructorEditCourse;
+use App\Filament\Instructor\Resources\CourseResource\Pages\EditCourse;
 use App\Filament\Instructor\Resources\CourseResource\Pages\ListCourses;
 use App\Filament\Instructor\Resources\Courses\Schemas\CourseForm;
 use App\Filament\Instructor\Resources\Courses\Schemas\CourseInfolist;
@@ -63,7 +63,7 @@ class CourseResource extends Resource
         return [
             'index' => ListCourses::route('/'),
             'create' => CreateCourse::route('/create'),
-            'edit' => InstructorEditCourse::route('/{record}/edit'),
+            'edit' => EditCourse::route('/{record}/edit'),
         ];
     }
 }

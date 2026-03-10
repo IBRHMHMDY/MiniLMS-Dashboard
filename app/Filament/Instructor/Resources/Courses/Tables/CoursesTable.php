@@ -2,6 +2,7 @@
 
 namespace App\Filament\Instructor\Resources\Courses\Tables;
 
+use App\Filament\Instructor\Resources\Lessons\LessonResource;
 use App\Models\Course;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -79,7 +80,7 @@ class CoursesTable
                     ->label('Manage Lessons')
                     ->icon('heroicon-o-document-text')
                     ->color('warning')
-                    ->url(fn (Course $record): string => "#"),
+                    ->url(fn (Course $record): string => LessonResource::getUrl('index', ['course_id' => $record->id])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
