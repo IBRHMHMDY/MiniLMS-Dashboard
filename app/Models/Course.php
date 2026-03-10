@@ -54,11 +54,13 @@ class Course extends Model
         'image_path',
         'is_free',
         'price',
+        'is_published',
     ];
 
     protected $casts = [
         'is_free' => 'boolean', // 👈 لضمان تحويله دائماً لـ true/false
         'price' => 'decimal:2', // 👈 للحفاظ على دقة الأرقام المالية
+        'is_published' => 'boolean', // 👈 لضمان تحويله دائماً لـ true/false
     ];
 
     public function instructor(): BelongsTo

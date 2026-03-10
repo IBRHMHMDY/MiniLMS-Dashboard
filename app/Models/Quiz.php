@@ -37,8 +37,11 @@ class Quiz extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['course_id', 'lesson_id', 'title', 'pass_mark'];
-
+    protected $fillable = ['course_id', 'lesson_id', 'title', 'pass_mark', 'is_published', 'is_final_exam'];
+    protected $casts = [
+        'is_published' => 'boolean', // 👈 لضمان تحويله دائماً لـ true/false
+        'is_final_exam' => 'boolean', // 👈 لضمان تحويله دائماً لـ true/false
+    ];
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);

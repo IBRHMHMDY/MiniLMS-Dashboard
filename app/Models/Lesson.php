@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,11 +45,15 @@ class Lesson extends Model
         'content',
         'video_url',
         'order_number',
+        'is_published',
     ];
 
     // هذا سيقوم بإضافة حقل is_completed في الـ JSON تلقائياً
     protected $appends = ['is_completed'];
 
+    protected $casts = [
+        'is_published' => 'boolean', // 👈 لضمان تحويله دائماً لـ true/false
+    ];
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
@@ -66,10 +71,10 @@ class Lesson extends Model
 
     public function getIsCompletedAttribute(): bool
     {
-        if (! auth()->check()) {
+        if (!Filament::auth()->check()) {
             return false;
         }
 
-        return $this->usersWhoCompleted()->where('user_id', auth()->id())->exists();
+        return $this->usersWhoCompleted()->where('user_id', Filament::auth()->id())->exists();
     }
 }

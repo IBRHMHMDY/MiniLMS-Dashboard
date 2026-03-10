@@ -8,6 +8,7 @@ use App\Http\Resources\Api\V1\LessonResource;
 use App\Models\Course;
 use App\Services\CourseService;
 use App\Traits\ApiResponseTrait;
+use Filament\Facades\Filament;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -53,7 +54,7 @@ class CourseController extends Controller
      */
     public function enroll(Course $course)
     {
-        $user = auth()->user();
+        $user = Filament::auth()->user();
 
         // التحقق مما إذا كان مشتركاً بالفعل
         if ($user->courses()->where('course_id', $course->id)->exists()) {
@@ -101,7 +102,7 @@ class CourseController extends Controller
      */
     public function toggleLessonCompletion(\App\Models\Lesson $lesson)
     {
-        $user = auth()->user();
+        $user = Filament::auth()->user();
         // دالة toggle ستقوم بإضافة الدرس إذا لم يكن موجوداً، أو حذفه إذا كان موجوداً
         $user->completedLessons()->toggle($lesson->id);
 
@@ -113,7 +114,7 @@ class CourseController extends Controller
      */
     public function myCourses()
     {
-        $user = auth()->user();
+        $user = Filament::auth()->user();
 
         // جلب كورسات الطالب مع عدد الدروس
         $myCourses = $user->courses()->withCount('lessons')->get();

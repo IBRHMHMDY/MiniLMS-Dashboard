@@ -1,0 +1,6 @@
+/* استدعاء ثيم Filament الأساسي */
+@import "../../../../vendor/filament/filament/resources/css/theme.css";
+
+/* توجيه Tailwind v4 للبحث عن الكلاسات في مساراتنا المخصصة */
+@source "../../../../app/Filament/Instructor";
+@source "../../../views/filament/instructor";
