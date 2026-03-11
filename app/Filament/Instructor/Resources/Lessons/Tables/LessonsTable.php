@@ -48,7 +48,9 @@ class LessonsTable
                 ToggleColumn::make('is_published')
                     ->label('Published')
                     ->onColor('success')
-                    ->offColor('danger'),
+                    ->offColor('danger')
+                    
+
             ])
             ->filters([
                 SelectFilter::make('course_id')
@@ -80,10 +82,10 @@ class LessonsTable
 
                 // زر إدارة اختبارات الدرس (يحول للصفحة مع فلترة برقم الدرس)
                 Action::make('lesson_quiz')
-                    ->label('َLesson Quiz')
+                    ->label('َQuizzes')
                     ->icon('heroicon-o-document-text')
                     ->color('warning')
-                    ->url(fn (Lesson $record): string => '/instructor/quizzes?tableFilters[lesson_id][value]='.$record->id),
+                    ->url(fn (Lesson $record): string => \App\Filament\Instructor\Resources\Quizzes\QuizResource::getUrl('index', ['lesson_id' => $record->id])),
 
             ])
             ->toolbarActions([

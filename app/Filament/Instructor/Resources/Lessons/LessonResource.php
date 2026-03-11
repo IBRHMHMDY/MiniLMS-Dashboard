@@ -37,7 +37,7 @@ class LessonResource extends Resource
             ->whereHas('course', function (Builder $query) {
                 $query->where('instructor_id', Auth::id());
             })
-            ->withCount('quiz');
+            ->withCount('quizzes');
     }
 
     public static function form(Schema $schema): Schema

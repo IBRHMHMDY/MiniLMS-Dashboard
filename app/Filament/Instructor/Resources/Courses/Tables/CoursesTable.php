@@ -2,12 +2,12 @@
 
 namespace App\Filament\Instructor\Resources\Courses\Tables;
 
+use App\Filament\Instructor\Resources\FinalExams\FinalExamResource;
 use App\Filament\Instructor\Resources\Lessons\LessonResource;
 use App\Models\Course;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
@@ -40,14 +40,14 @@ class CoursesTable
                     ->badge() // جعل الرقم يظهر كشريط (Badge) أنيق
                     ->color('info'), // اللون الأزرق لتمييزه
                 TextColumn::make('enrollments_count')
-                    ->label('Students Enrolled')
+                    ->label('Students')
                     ->icon('heroicon-o-users')
                     ->sortable(),
                 IconColumn::make('is_free')
-                    ->label('Free')
+                    ->label('Free/Paid')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle'),
+                    ->falseIcon('heroicon-o-banknotes'),
                 TextColumn::make('price')
                     ->label('Price')
                     ->money()
@@ -81,12 +81,16 @@ class CoursesTable
             ])
             ->recordActions([
                 ViewAction::make()->label('Details')->color('gray'),
-                EditAction::make()->color('primary'),
                 Action::make('manage_lessons')
-                    ->label('Manage Lessons')
+                    ->label('Lessons')
                     ->icon('heroicon-o-document-text')
                     ->color('warning')
                     ->url(fn (Course $record): string => LessonResource::getUrl('index', ['course_id' => $record->id])),
+                Action::make('manage_final_exams')
+                    ->label('Final Exam')
+                    ->icon('heroicon-o-academic-cap')
+                    ->color('danger')
+                    ->url(fn (Course $record): string => FinalExamResource::getUrl('index', ['course_id' => $record->id])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

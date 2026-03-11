@@ -59,7 +59,7 @@ class Lesson extends Model
         return $this->belongsTo(Course::class);
     }
 
-    public function quiz()
+    public function quizzes()
     {
         return $this->hasMany(Quiz::class);
     }
