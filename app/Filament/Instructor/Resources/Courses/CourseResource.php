@@ -33,7 +33,7 @@ class CourseResource extends Resource
     {
         return parent::getEloquentQuery()
             ->where('instructor_id', Auth::id())
-            ->withCount('enrollments');
+            ->withCount(['enrollments', 'lessons']); // جلب عدد الطلاب وعدد الدروس معاً
     }
     
     public static function form(Schema $schema): Schema

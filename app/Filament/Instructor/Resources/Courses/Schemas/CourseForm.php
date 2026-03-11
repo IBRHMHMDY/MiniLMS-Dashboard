@@ -52,7 +52,7 @@ class CourseForm
                                 TextInput::make('price')
                                     ->label('Price')
                                     ->numeric()
-                                    ->prefix('$')
+                                    ->prefix('EGP')
                                     // السعر مطلوب فقط إذا لم يكن الكورس مجانياً
                                     ->required(fn (UtilitiesGet $get) => ! $get('is_free'))
                                     // إخفاء الحقل بذكاء (UX) إذا كان الكورس مجانياً

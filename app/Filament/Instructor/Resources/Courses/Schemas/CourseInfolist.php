@@ -18,7 +18,7 @@ class CourseInfolist
                         ImageEntry::make('image_path')->label('Cover Image')->hiddenLabel(),
                         TextEntry::make('title')->weight('bold')->size('lg'),
                         TextEntry::make('category.name')->badge()->color('info'),
-                        TextEntry::make('price')->money('usd')->label('Price'),
+                        TextEntry::make('price')->money('EGP')->label('Price'),
                         TextEntry::make('description')->prose()->columnSpanFull(),
                     ])->columnSpanFull(3),
             ]);

@@ -14,12 +14,16 @@ class CreateLesson extends CreateRecord
 
     public function getBreadcrumbs(): array
     {
-        $courseId = request()->query('course_id');
+        $courseId = request()->query('course_id') ?? ($this->data['course_id'] ?? null);
+        
         $course = $courseId ? Course::find($courseId) : null;
+        
+        // 2. تأمين قراءة العنوان لمنع خطأ Null Property
+        $courseTitle = $course ? $course->title : 'Course';
 
         return [
             CourseResource::getUrl('index') => 'My Courses',
-            $course->title,
+            $courseTitle,
             LessonResource::getUrl('index', ['course_id' => $courseId]) => 'Lessons',
             'Add New Lesson',
         ];
@@ -36,7 +40,9 @@ class CreateLesson extends CreateRecord
                 ->icon('heroicon-o-plus-circle')
                 ->action(function () {
                     $this->create();
-                    $courseId = request()->query('course_id');
+                    // 3. الحل المعماري الأقوى: جلب رقم الكورس من الدرس الذي تم حفظه للتو في قاعدة البيانات!
+                    $courseId = $this->record->course_id;
+                    
                     $this->redirect($this->getResource()::getUrl('create', ['course_id' => $courseId]));
                 }),
 

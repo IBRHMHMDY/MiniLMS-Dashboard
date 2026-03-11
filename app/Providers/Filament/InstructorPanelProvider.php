@@ -58,7 +58,7 @@ class InstructorPanelProvider extends PanelProvider
             ->brandLogoHeight('4rem')
             ->renderHook(
                 PanelsRenderHook::TOPBAR_END,
-                fn (): string => view('filament.instructor.topbar-end')->render()
+                fn (): string => view('filament.instructor.topbar-end')->render(),
             );
     }
 }
