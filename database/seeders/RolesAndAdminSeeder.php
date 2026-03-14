@@ -20,8 +20,8 @@ class RolesAndAdminSeeder extends Seeder
         $admin = User::firstOrCreate(
             ['email' => 'admin@minilms.com'],
             [
-                'name' => 'Manager',
-                'password' => Hash::make('password'),
+                'name' => 'Test Manager',
+                'password' => 'password',
             ]
         );
 

@@ -87,13 +87,19 @@ class User extends Authenticatable implements FilamentUser
     }
 
     // تحديد من يمكنه دخول لوحة تحكم Filament
-    public function canAccessPanel(Panel $panel): bool
+public function canAccessPanel(Panel $panel): bool
     {
-        // Admin Panel
+        // منع المستخدمين المحظورين من دخول أي لوحة
+        if (!is_null($this->banned_at)) {
+            return false;
+        }
+
+        // صلاحيات لوحة الأدمن
         if ($panel->getId() === 'admin') {
             return $this->hasRole('admin');
         }
-        // Instructor Panel
+
+        // صلاحيات لوحة المدرب
         if ($panel->getId() === 'instructor') {
             return $this->hasRole('instructor');
         }
