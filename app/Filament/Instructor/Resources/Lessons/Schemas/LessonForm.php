@@ -2,6 +2,7 @@
 
 namespace App\Filament\Instructor\Resources\Lessons\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
@@ -20,13 +21,23 @@ class LessonForm
                 Section::make('Lesson Information')
                     ->schema([
                         // السطر الأول: الكورس (يتم التقاطه من الرابط تلقائياً) - عنوان الدرس
-                        Grid::make(2)->schema([
+                        Grid::make(3)->schema([
                             
                             TextInput::make('title')
                                 ->label('Lesson Title')
                                 ->required()
                                 ->maxLength(255),
+                            Toggle::make('is_free_preview')
+                                ->label('Free Preview')
+                                ->helperText('Allow non-enrolled students to watch this lesson.')
+                                ->inline(false)
+                                ->onColor('success'),
+                            Toggle::make('is_published')
+                                ->label('Publish Lesson')
+                                ->default(false)
+                                ->inline(false),
                         ]),
+
 
                         // السطر الثاني: رابط الفيديو - حالة النشر
                         Grid::make(2)->schema([
@@ -35,12 +46,25 @@ class LessonForm
                                 ->url()
                                 ->placeholder('https://...')
                                 ->required(),
-
-                            Toggle::make('is_published')
-                                ->label('Publish Lesson')
-                                ->default(false)
-                                ->inline(false),
+                            TextInput::make('duration_in_minutes')
+                                ->label('Duration (Minutes)')
+                                ->numeric()
+                                ->minValue(1)
+                                ->suffix('Mins'),
                         ]),
+                        Grid::make(3)->schema([
+                            FileUpload::make('attachments')
+                                ->label('Lesson Attachments (PDF, ZIP, etc.)')
+                                ->directory('lesson-attachments')
+                                ->multiple() // السماح برفع ملفات متعددة دفعة واحدة
+                                ->downloadable()
+                                ->preserveFilenames()
+                                ->maxSize(20480) // الحد الأقصى 20 ميجابايت للملف
+                                ->columnSpanFull(),
+
+                            
+                        ])->columnSpanFull(),
+                        
 
                         // السطر الثالث: محتوى الدرس
                         Grid::make(1)->schema([

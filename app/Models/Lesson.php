@@ -44,6 +44,9 @@ class Lesson extends Model
         'title',
         'content',
         'video_url',
+        'attachments',
+        'duration_in_minutes',
+        'is_free_preview',
         'order_number',
         'is_published',
     ];
@@ -52,7 +55,9 @@ class Lesson extends Model
     protected $appends = ['is_completed'];
 
     protected $casts = [
-        'is_published' => 'boolean', // 👈 لضمان تحويله دائماً لـ true/false
+        'is_published' => 'boolean',
+        'is_free_preview' => 'boolean',
+        'attachments' => 'array',
     ];
     public function course(): BelongsTo
     {

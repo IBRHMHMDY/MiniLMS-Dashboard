@@ -9,7 +9,6 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -31,13 +30,13 @@ class LessonsTable
                     ->weight('bold'),
 
                 
-                    IconColumn::make('quizzes_count')
-                    ->label('Has Quiz?')
-                    ->boolean()
-                    ->getStateUsing(fn (Lesson $record): bool => $record->quizzes_count > 0)
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle'),
-
+                TextColumn::make('quizzes_count')
+                    ->label('Quizzes')
+                    ->default(fn (Lesson $record): int => $record->quizzes->count() . ' Quiz')
+                    ->size('xl')
+                    ->color(fn (Lesson $record): string => $record->quizzes->count() > 0 ? 'success' : 'danger')
+                    ->badge()
+                    ->sortable(),
                 TextColumn::make('video_url')
                     ->label('Video Link')
                     ->copyable()

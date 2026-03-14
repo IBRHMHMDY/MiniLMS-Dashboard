@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Instructor\Resources\CourseResource\Pages;
+namespace App\Filament\Instructor\Resources\Courses\Pages;
 
-use App\Filament\Instructor\Resources\Courses\CourseResource as EditInstructorCourses;
+use App\Filament\Instructor\Resources\Courses\CourseResource;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 
 class EditCourse extends EditRecord
 {
-    protected static string $resource = EditInstructorCourses::class;
+    protected static string $resource = CourseResource::class;
 
     public function getBreadcrumbs(): array
     {

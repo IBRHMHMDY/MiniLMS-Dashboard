@@ -2,9 +2,9 @@
 
 namespace App\Filament\Instructor\Resources\Courses;
 
-use App\Filament\Instructor\Resources\CourseResource\Pages\CreateCourse;
-use App\Filament\Instructor\Resources\CourseResource\Pages\EditCourse;
-use App\Filament\Instructor\Resources\CourseResource\Pages\ListCourses;
+use App\Filament\Instructor\Resources\Courses\Pages\CreateCourse as InstructorCreateCourse;
+use App\Filament\Instructor\Resources\Courses\Pages\EditCourse as InstructorEditCourse;
+use App\Filament\Instructor\Resources\Courses\Pages\ListCourses;
 use App\Filament\Instructor\Resources\Courses\Schemas\CourseForm;
 use App\Filament\Instructor\Resources\Courses\Schemas\CourseInfolist;
 use App\Filament\Instructor\Resources\Courses\Tables\CoursesTable;
@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Auth;
 class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
-
+    
+    protected static bool $shouldRegisterNavigation = false;
+    
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'Course';
@@ -33,7 +35,7 @@ class CourseResource extends Resource
     {
         return parent::getEloquentQuery()
             ->where('instructor_id', Auth::id())
-            ->withCount(['enrollments', 'lessons']); // جلب عدد الطلاب وعدد الدروس معاً
+            ->withCount(['enrollments', 'lessons']);
     }
     
     public static function form(Schema $schema): Schema
@@ -62,8 +64,8 @@ class CourseResource extends Resource
     {
         return [
             'index' => ListCourses::route('/'),
-            'create' => CreateCourse::route('/create'),
-            'edit' => EditCourse::route('/{record}/edit'),
+            'create' => InstructorCreateCourse::route('/create'),
+            'edit' => InstructorEditCourse::route('/{record}/edit'),
         ];
     }
 }

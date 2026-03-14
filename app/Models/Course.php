@@ -53,7 +53,6 @@ class Course extends Model
         'price',
         'image_path',
         'is_free',
-        'price',
         'is_published',
     ];
 

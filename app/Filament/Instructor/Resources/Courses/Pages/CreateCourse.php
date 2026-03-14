@@ -1,15 +1,23 @@
 <?php
 
-namespace App\Filament\Instructor\Resources\CourseResource\Pages;
+namespace App\Filament\Instructor\Resources\Courses\Pages;
 
 
-use App\Filament\Instructor\Resources\Courses\CourseResource as NewInstructorCourses;
+use App\Filament\Instructor\Resources\Courses\CourseResource;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Support\Enums\Width;
 
 class CreateCourse extends CreateRecord
 {
-    protected static string $resource = NewInstructorCourses::class;
+    protected static string $resource = CourseResource::class;
+
+     protected  Width | string | null $maxContentWidth = Width::Full;
+       
+    public function getTitle(): string
+    {
+        return 'Create Course';
+    }
 
     // تخصيص مسار التنقل (Breadcrumbs)
     public function getBreadcrumbs(): array
@@ -26,7 +34,7 @@ class CreateCourse extends CreateRecord
         return [
             // زر 1: الحفظ والانتقال للصفحة الرئيسية (تعديل الزر الافتراضي)
             $this->getCreateFormAction()
-                ->label('Save & Go to Dashboard'),
+                ->label('Save & Go to MyCourses'),
 
             // زر 2: الحفظ والانتقال لصفحة إضافة درس جديد
             Action::make('save_and_add_lesson')

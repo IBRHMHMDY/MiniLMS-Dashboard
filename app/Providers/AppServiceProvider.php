@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Providers\Filament\InstructorPanelProvider;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -16,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        AdminAdminPanelProvider::class;
-        InstructorPanelProvier::class;
+        // AdminPanelProvider::class;
+        InstructorPanelProvider::class;
     }
 }
