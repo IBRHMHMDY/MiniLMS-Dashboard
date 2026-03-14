@@ -15,17 +15,14 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 
 class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
-    
-    // protected static bool $shouldRegisterNavigation = false;
-    
+        
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
-
-    protected static ?string $recordTitleAttribute = 'Course';
 
     protected static ?string $navigationLabel = 'My Courses';
 
@@ -41,17 +38,14 @@ class CourseResource extends Resource
         return __('My Courses');
     }
 
-    // إضافة هذه الدالة هامة جداً لإجبار Filament على إظهار المورد في الشريط الجانبي
-    public static function canViewAny(): bool
-    {
-        return true;
-    }
 
-    public static function getEloquentQuery(): Builder
+public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
             ->where('instructor_id', Auth::id())
-            ->withCount(['enrollments', 'lessons']);
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
     
     public static function form(Schema $schema): Schema

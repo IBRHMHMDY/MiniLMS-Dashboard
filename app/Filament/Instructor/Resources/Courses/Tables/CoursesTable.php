@@ -2,18 +2,14 @@
 
 namespace App\Filament\Instructor\Resources\Courses\Tables;
 
-use App\Filament\Instructor\Resources\FinalExams\FinalExamResource;
-use App\Filament\Instructor\Resources\Lessons\LessonResource;
+use App\Enums\CourseStatus;
 use App\Models\Course;
-use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Actions\EditAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class CoursesTable
@@ -22,110 +18,57 @@ class CoursesTable
     {
         return $table
             ->columns([
-                ImageColumn::make('image_path')
-                    ->label('Cover')
-                    ->square()
-                    ->imageSize(50)
-                    ->toggleable(isToggledHiddenByDefault: true),
+                ImageColumn::make('thumbnail')
+                    ->label(__('Image'))
+                    ->circular(),
+
                 TextColumn::make('title')
-                    ->label('Course Name')
-                    ->description(fn (Course $record): string => $record->category?->name ?? 'No Category')
+                    ->label(__('Course Title'))
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
-                TextColumn::make('status')
-                    ->label('Status')
+
+                TextColumn::make('category.name')
+                    ->label(__('Category'))
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'draft' => 'gray',
-                        'pending' => 'warning',
-                        'approved' => 'success',
-                        'rejected' => 'danger',
-                        default => 'gray',
-                    }),
-                TextColumn::make('rejection_reason')
-                    ->label('Rejection Reason')
-                    ->color('danger')
-                    ->wrap()
-                    ->toggleable(isToggledHiddenByDefault: true), // مخفي افتراضياً لتنظيف واجهة الجدول
-                TextColumn::make('lessons_count')
-                    ->label('Lessons')
-                    ->icon('heroicon-o-book-open') // أيقونة الكتاب المعبرة عن الدروس
-                    ->sortable()
-                    ->badge() // جعل الرقم يظهر كشريط (Badge) أنيق
-                    ->color('info'), // اللون الأزرق لتمييزه
-                TextColumn::make('enrollments_count')
-                    ->label('Students')
-                    ->icon('heroicon-o-users')
-                    ->sortable(),
-                IconColumn::make('is_free')
-                    ->label('Free/Paid')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-banknotes'),
+                    ->color('gray'),
+
                 TextColumn::make('price')
-                    ->label('Price')
-                    ->money()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label(__('Price'))
+                    ->money('usd')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->getStateUsing(fn (Course $record) => $record->is_free ? 0 : $record->price)
+                    ->badge(fn (Course $record) => $record->is_free)
+                    ->color(fn (Course $record) => $record->is_free ? 'success' : 'primary')
+                    ->formatStateUsing(fn ($state, Course $record) => $record->is_free ? __('Free') : '$' . $state),
+
+                TextColumn::make('status')
+                    ->label(__('Status'))
+                    ->badge()
+                    ->color(fn (CourseStatus $state): string => match ($state) {
+                        CourseStatus::DRAFT => 'gray',
+                        CourseStatus::PUBLISHED => 'success',
+                        CourseStatus::ARCHIVED => 'danger',
+                    }),
             ])
             ->filters([
-                SelectFilter::make('category_id')
-                    ->relationship('category', 'name')
-                    ->label('Category')
-                    ->multiple()
-                    ->preload(),
                 SelectFilter::make('status')
-                    ->label('Publish Status')
-                    ->options([
-                        'draft' => 'Draft',
-                        'pending' => 'Pending Approval',
-                        'approved' => 'Approved',
-                        'rejected' => 'Rejected',
-                    ]),
-                TernaryFilter::make('is_free')
-                    ->label('Price Status')
-                    ->trueLabel('Free Courses')
-                    ->falseLabel('Paid Courses'),
+                    ->label(__('Status'))
+                    ->options(CourseStatus::class),
+
+                SelectFilter::make('category_id')
+                    ->label(__('Category'))
+                    ->relationship('category', 'name'),
             ])
             ->recordActions([
-                ViewAction::make()->label('Details')->color('gray'),
-                
-                // إضافة زر (إرسال للمراجعة)
-                Action::make('submit_for_review')
-                    ->label('Submit for Review')
-                    ->icon('heroicon-o-paper-airplane')
-                    ->color('success')
-                    ->requiresConfirmation()
-                    ->modalHeading('Submit Course for Review')
-                    ->modalDescription('Are you sure you want to submit this course for admin approval? You will not be able to edit major details while it is pending.')
-                    ->visible(fn (Course $record): bool => in_array($record->status, ['draft', 'rejected']))
-                    ->action(function (Course $record) {
-                        $record->update(['status' => 'pending']);
-                    }),
-
-                Action::make('manage_lessons')
-                    ->label('Lessons')
-                    ->icon('heroicon-o-document-text')
-                    ->color('warning')
-                    ->url(fn (Course $record): string => LessonResource::getUrl('index', ['course_id' => $record->id])),
-                Action::make('manage_final_exams')
-                    ->label('Final Exam')
-                    ->icon('heroicon-o-academic-cap')
-                    ->color('danger')
-                    ->url(fn (Course $record): string => FinalExamResource::getUrl('index', ['course_id' => $record->id])),
+                EditAction::make(),
+                // سنقوم بإضافة زر "إدارة المحتوى" لاحقاً للوصول للـ Sections
             ])
-            ->toolbarActions([
+            ->recordBulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 }
