@@ -13,14 +13,26 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->foreignId('instructor_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('category_id')->constrained('categories')->cascadeOnDelete();
+            
             $table->string('title');
-            $table->text('description');
-            $table->boolean('is_free')->default(true);
-            $table->decimal('price', 8, 2)->default(0.00);
-            $table->string('image_path')->nullable();
+            $table->string('slug')->unique();
+            $table->text('short_description')->nullable();
+            $table->longText('description')->nullable();
+            $table->string('thumbnail')->nullable();
+            $table->string('intro_video_url')->nullable();
+            
+            $table->string('level')->default('beginner'); // Uses CourseLevel Enum
+            $table->string('language')->default('ar');
+            $table->decimal('price', 10, 2)->default(0.00);
+            $table->boolean('is_free')->default(false);
+            $table->string('status')->default('draft'); // Uses CourseStatus Enum
+            $table->timestamp('published_at')->nullable();
+            $table->integer('duration_in_minutes')->default(0);
+            
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

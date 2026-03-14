@@ -5,30 +5,31 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Lesson extends Model
+class Section extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'section_id',
+        'course_id',
         'title',
-        'slug',
         'description',
-        'video_url',
-        'duration_in_minutes',
         'sort_order',
         'is_published',
-        'is_free_preview',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
-        'is_free_preview' => 'boolean',
     ];
 
-    public function section(): BelongsTo
+    public function course(): BelongsTo
     {
-        return $this->belongsTo(Section::class);
+        return $this->belongsTo(Course::class);
+    }
+
+    public function lessons(): HasMany
+    {
+        return $this->hasMany(Lesson::class)->orderBy('sort_order');
     }
 }

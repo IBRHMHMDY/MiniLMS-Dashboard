@@ -17,8 +17,16 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            
+            // Custom LMS Fields
+            $table->string('avatar')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('status')->default('active'); // active, inactive, banned
+            $table->text('bio')->nullable();
+            
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
