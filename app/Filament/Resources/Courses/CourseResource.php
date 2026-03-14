@@ -13,7 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
+use UnitEnum;
 
 class CourseResource extends Resource
 {
@@ -21,7 +21,23 @@ class CourseResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'Course';
+    protected static string|UnitEnum|null $navigationGroup = 'Approvals & Workflows';
+
+    public static function getModelLabel(): string
+    {
+        return __('Course');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Courses Approvals');
+    }
+
+    // يمكن للأدمن الاطلاع فقط وليس الإنشاء (المدرب هو من ينشئ)
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -32,18 +48,6 @@ class CourseResource extends Resource
     {
         return CoursesTable::configure($table);
     }
-
-    // تطبيق عزل البيانات: المدرب يرى كورساته فقط
-    // public static function getEloquentQuery(): Builder
-    // {
-    //     $query = parent::getEloquentQuery();
-
-    //     if (auth()->user()->hasRole('instructor')) {
-    //         $query->where('instructor_id', auth()->id());
-    //     }
-
-    //     return $query;
-    // }
 
     public static function getRelations(): array
     {

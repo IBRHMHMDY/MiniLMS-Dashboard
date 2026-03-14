@@ -67,6 +67,8 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'is_verified',
+        'banned_at',
     ];
 
     protected $hidden = [
@@ -79,6 +81,8 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_verified' => 'boolean',
+            'banned_at' => 'datetime',
         ];
     }
 
@@ -96,6 +100,18 @@ class User extends Authenticatable implements FilamentUser
 
         return false;
     }
+
+    public function transactionsAsInstructor(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'instructor_id');
+    }
+
+    public function payoutRequests(): HasMany
+    {
+        return $this->hasMany(PayoutRequest::class, 'instructor_id');
+    }
+
+
 
     public function coursesTaught(): HasMany
     {

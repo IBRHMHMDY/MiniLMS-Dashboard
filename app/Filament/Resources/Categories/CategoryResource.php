@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class CategoryResource extends Resource
 {
@@ -20,12 +21,16 @@ class CategoryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'Category';
+    protected static string|UnitEnum|null $navigationGroup = 'Master Data';
 
-    // إخفاء القائمة عن غير المديرين
-    public static function canViewAny(): bool
+    public static function getModelLabel(): string
     {
-        return auth()->user()->hasRole('admin');
+        return __('Category');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('Categories');
     }
 
     public static function form(Schema $schema): Schema

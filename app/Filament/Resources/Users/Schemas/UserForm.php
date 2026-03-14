@@ -4,8 +4,8 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Hash;
 
 class UserForm
 {
@@ -14,24 +14,25 @@ class UserForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('الاسم')
                     ->required()
                     ->maxLength(255),
                 TextInput::make('email')
+                    ->label('Email Address')
                     ->email()
                     ->required()
-                    ->maxLength(255)
-                    ->unique(ignoreRecord: true),
-
+                    ->maxLength(255),
                 TextInput::make('password')
+                    ->label('Password')
                     ->password()
-                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                     ->dehydrated(fn ($state) => filled($state))
                     ->required(fn (string $context): bool => $context === 'create'),
                 Select::make('roles')
+                    ->label('Permissions (Role)')
                     ->relationship('roles', 'name')
-                    ->multiple()
                     ->preload()
                     ->searchable(),
+            
             ]);
     }
 }
