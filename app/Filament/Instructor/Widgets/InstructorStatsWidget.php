@@ -4,6 +4,7 @@ namespace App\Filament\Instructor\Widgets;
 
 use App\Models\Course;
 use App\Models\Enrollment;
+use App\Models\Transaction;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
@@ -24,23 +25,20 @@ class InstructorStatsWidget extends BaseWidget
     {
         $instructorId = Auth::id();
 
-        // استعلامات جلب البيانات
+        // 2. استعلامات جلب البيانات (محدثة لتتوافق مع نظام الـ Status الجديد)
         $totalCourses = Course::where('instructor_id', $instructorId)->count();
-        $publishedCourses = Course::where('instructor_id', $instructorId)->where('is_published', true)->count();
-        $draftCourses = Course::where('instructor_id', $instructorId)->where('is_published', false)->count();
-        
-        $freeCourses = Course::where('instructor_id', $instructorId)->where(function ($query) {
-            $query->whereNull('price')->orWhere('price', 0);
-        })->count();
-        
-        $paidCourses = Course::where('instructor_id', $instructorId)->where('price', '>', 0)->count();
+        $approvedCourses = Course::where('instructor_id', $instructorId)->where('status', 'approved')->count();
+        $pendingCourses = Course::where('instructor_id', $instructorId)->where('status', 'pending')->count();
+        $draftAndRejected = Course::where('instructor_id', $instructorId)->whereIn('status', ['draft', 'rejected'])->count();
         
         $totalStudents = Enrollment::whereHas('course', function ($query) use ($instructorId) {
             $query->where('instructor_id', $instructorId);
         })->count();
 
-        // 2. تعريف التأثيرات الحركية (Tailwind CSS) ليتم تطبيقها على كل البطاقات
-        // Hover: ترتفع البطاقة للأعلى قليلاً، ويزيد الظل بشكل ناعم
+        // جلب إجمالي أرباح المدرب الصافية
+        $totalEarnings = Transaction::where('instructor_id', $instructorId)->sum('instructor_commission');
+
+        // 3. تعريف التأثيرات الحركية (Tailwind CSS)
         $hoverEffect = 'hover:-translate-y-2 hover:shadow-xl transition-transform transition-shadow duration-300 cursor-default';
 
         return [
@@ -48,47 +46,47 @@ class InstructorStatsWidget extends BaseWidget
                 ->description('All your courses')
                 ->descriptionIcon('heroicon-m-academic-cap')
                 ->color('primary')
-                ->icon('heroicon-o-rectangle-stack') // أيقونة كبيرة
-                ->chart([1, 3, 2, 5, 4, 6, 8]) // رسم بياني جمالي (Sparkline)
+                ->icon('heroicon-o-rectangle-stack')
+                ->chart([1, 3, 2, 5, 4, 6, 8])
                 ->extraAttributes(['class' => $hoverEffect]),
 
-            Stat::make('Published', $publishedCourses)
-                ->description('Live & active')
+            Stat::make('Approved (Live)', $approvedCourses)
+                ->description('Published to students')
                 ->descriptionIcon('heroicon-m-check-circle')
-                ->color('success') // لون أخضر
+                ->color('success') 
                 ->icon('heroicon-o-check-badge')
                 ->chart([0, 2, 4, 6, 8, 10])
                 ->extraAttributes(['class' => $hoverEffect]),
 
-            Stat::make('Drafts', $draftCourses)
-                ->description('Work in progress')
+            Stat::make('Pending Review', $pendingCourses)
+                ->description('Waiting for admin')
+                ->descriptionIcon('heroicon-m-clock')
+                ->color('info') 
+                ->icon('heroicon-o-clock')
+                ->extraAttributes(['class' => $hoverEffect]),
+
+            Stat::make('Drafts & Rejected', $draftAndRejected)
+                ->description('Needs your attention')
                 ->descriptionIcon('heroicon-m-pencil-square')
-                ->color('warning') // لون برتقالي
+                ->color('warning') 
                 ->icon('heroicon-o-document-text')
                 ->chart([5, 4, 3, 3, 2, 1])
-                ->extraAttributes(['class' => $hoverEffect]),
-
-            Stat::make('Free Courses', $freeCourses)
-                ->description('No cost')
-                ->descriptionIcon('heroicon-m-gift')
-                ->color('info') // لون أزرق فاتح
-                ->icon('heroicon-o-gift')
-                ->extraAttributes(['class' => $hoverEffect]),
-
-            Stat::make('Paid Courses', $paidCourses)
-                ->description('Generating revenue')
-                ->descriptionIcon('heroicon-m-currency-dollar')
-                ->color('danger') // لون أحمر
-                ->icon('heroicon-o-banknotes')
-                ->chart([1, 2, 5, 8, 15, 20])
                 ->extraAttributes(['class' => $hoverEffect]),
 
             Stat::make('Total Students', $totalStudents)
                 ->description('Enrolled learners')
                 ->descriptionIcon('heroicon-m-users')
-                ->color('gray') // لون رمادي أنيق
+                ->color('gray') 
                 ->icon('heroicon-o-users')
                 ->chart([10, 20, 35, 50, 80, 120])
+                ->extraAttributes(['class' => $hoverEffect]),
+
+            Stat::make('Total Earnings', '$' . number_format($totalEarnings, 2))
+                ->description('Your net commissions')
+                ->descriptionIcon('heroicon-m-currency-dollar')
+                ->color('success') 
+                ->icon('heroicon-o-banknotes')
+                ->chart([1, 2, 5, 8, 15, 20])
                 ->extraAttributes(['class' => $hoverEffect]),
         ];
     }

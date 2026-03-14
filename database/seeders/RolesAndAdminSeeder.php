@@ -22,18 +22,20 @@ class RolesAndAdminSeeder extends Seeder
             [
                 'name' => 'Test Manager',
                 'password' => 'password',
+                'is_verified' => true
             ]
         );
 
         // 3. إسناد دور المدير للحساب
         $admin->assignRole('admin');
 
-        // 4. إنشاء حساب مدرب للتجربة
+        // 4. إنشاءis_ حساب مدرب للتجربة
         $instructor = User::firstOrCreate(
             ['email' => 'instructor@minilms.com'],
             [
                 'name' => 'Test Instructor',
                 'password' => Hash::make('password'),
+                'is_verified' => true
             ]
         );
         $instructor->assignRole('instructor');

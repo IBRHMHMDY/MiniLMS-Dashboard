@@ -6,6 +6,7 @@ use App\Http\Middleware\ForceInstructorPanelEnglish;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -51,7 +52,7 @@ class InstructorPanelProvider extends PanelProvider
             ->maxContentWidth('full')
             ->discoverResources(in: app_path('Filament/Instructor/Resources'), for: 'App\\Filament\\Instructor\\Resources')
             ->discoverPages(in: app_path('Filament/Instructor/Pages'), for: 'App\\Filament\\Instructor\\Pages')
-            ->pages([])
+            ->pages([Dashboard::class,])
             ->discoverWidgets(in: app_path('Filament/Instructor/Widgets'), for: 'App\\Filament\\Instructor\\Widgets')
             ->widgets([])
             ->middleware([

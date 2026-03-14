@@ -33,6 +33,21 @@ class CoursesTable
                     ->searchable()
                     ->sortable()
                     ->weight('bold'),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'draft' => 'gray',
+                        'pending' => 'warning',
+                        'approved' => 'success',
+                        'rejected' => 'danger',
+                        default => 'gray',
+                    }),
+                TextColumn::make('rejection_reason')
+                    ->label('Rejection Reason')
+                    ->color('danger')
+                    ->wrap()
+                    ->toggleable(isToggledHiddenByDefault: true), // مخفي افتراضياً لتنظيف واجهة الجدول
                 TextColumn::make('lessons_count')
                     ->label('Lessons')
                     ->icon('heroicon-o-book-open') // أيقونة الكتاب المعبرة عن الدروس
@@ -52,10 +67,6 @@ class CoursesTable
                     ->label('Price')
                     ->money()
                     ->sortable(),
-                IconColumn::make('is_published')
-                    ->label('Published')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -71,9 +82,14 @@ class CoursesTable
                     ->label('Category')
                     ->multiple()
                     ->preload(),
-                TernaryFilter::make('is_published')
-                    ->label('Publish Status'),
-                    
+                SelectFilter::make('status')
+                    ->label('Publish Status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'pending' => 'Pending Approval',
+                        'approved' => 'Approved',
+                        'rejected' => 'Rejected',
+                    ]),
                 TernaryFilter::make('is_free')
                     ->label('Price Status')
                     ->trueLabel('Free Courses')
@@ -81,6 +97,20 @@ class CoursesTable
             ])
             ->recordActions([
                 ViewAction::make()->label('Details')->color('gray'),
+                
+                // إضافة زر (إرسال للمراجعة)
+                Action::make('submit_for_review')
+                    ->label('Submit for Review')
+                    ->icon('heroicon-o-paper-airplane')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Submit Course for Review')
+                    ->modalDescription('Are you sure you want to submit this course for admin approval? You will not be able to edit major details while it is pending.')
+                    ->visible(fn (Course $record): bool => in_array($record->status, ['draft', 'rejected']))
+                    ->action(function (Course $record) {
+                        $record->update(['status' => 'pending']);
+                    }),
+
                 Action::make('manage_lessons')
                     ->label('Lessons')
                     ->icon('heroicon-o-document-text')

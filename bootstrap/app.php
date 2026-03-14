@@ -23,7 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     return '/instructor'; // توجيه المدرب للوحته
                 }
             }
-            return '/'; // المسار الافتراضي للطلاب أو الزوار
+            return null; // المسار الافتراضي للطلاب أو الزوار
         });
     
     })
