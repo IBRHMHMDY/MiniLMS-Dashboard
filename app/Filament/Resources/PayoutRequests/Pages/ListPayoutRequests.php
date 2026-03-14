@@ -1,28 +1,29 @@
 <?php
 
-namespace App\Filament\Resources\Courses\Pages;
+namespace App\Filament\Resources\PayoutRequests\Pages;
 
-use App\Filament\Resources\Courses\CourseResource;
+
+use app\Filament\Resources\PayoutRequests\PayoutRequestResource;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
 
-class ListCourses extends ListRecords
+class ListPayoutRequests extends ListRecords
 {
-    protected static string $resource = CourseResource::class;
+    protected static string $resource = PayoutRequestResource::class;
 
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make(__('All Courses')),
+            'all' => Tab::make(__('All Requests')),
             
-            'pending' => Tab::make(__('Pending Approval'))
+            'pending' => Tab::make(__('Pending'))
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'pending'))
                 ->badge($this->getModel()::where('status', 'pending')->count())
                 ->badgeColor('warning'),
                 
-            'approved' => Tab::make(__('Approved'))
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'approved')),
+            'paid' => Tab::make(__('Paid'))
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'paid')),
                 
             'rejected' => Tab::make(__('Rejected'))
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'rejected')),

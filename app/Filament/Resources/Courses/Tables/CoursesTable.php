@@ -2,10 +2,8 @@
 
 namespace App\Filament\Resources\Courses\Tables;
 
-use App\Models\Course;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -54,39 +52,43 @@ class CoursesTable
             ->recordActions([
                 ViewAction::make(),
                 
-                // Approve Action
                 Action::make('approve')
                     ->label(__('Approve'))
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->visible(fn (Course $record) => $record->status === 'pending')
-                    ->action(function (Course $record) {
-                        $record->update([
-                            'status' => 'approved',
-                            'rejection_reason' => null,
-                        ]);
+                    // يظهر إذا كان الكورس معلقاً أو مرفوضاً مسبقاً
+                    ->visible(fn (\App\Models\Course $record) => in_array($record->status, ['pending', 'rejected']))
+                    ->action(function (\App\Models\Course $record) {
+                        $record->update(['status' => 'approved', 'rejection_reason' => null]);
                     }),
 
-                // Reject Action with Modal
                 Action::make('reject')
                     ->label(__('Reject'))
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->visible(fn (Course $record) => $record->status === 'pending')
-                    ->schema([
-                        Textarea::make('rejection_reason')
+                    // يظهر إذا كان معلقاً أو حتى معتمداً ونريد التراجع
+                    ->visible(fn (\App\Models\Course $record) => in_array($record->status, ['pending', 'approved']))
+                    ->form([
+                        \Filament\Forms\Components\Textarea::make('rejection_reason')
                             ->label(__('Rejection Reason'))
                             ->required()
-                            ->maxLength(1000)
-                            ->helperText(__('Please provide a detailed reason so the instructor can fix the issues.')),
+                            ->maxLength(1000),
                     ])
-                    ->action(function (array $data, Course $record): void {
-                        $record->update([
-                            'status' => 'rejected',
-                            'rejection_reason' => $data['rejection_reason'],
-                        ]);
+                    ->action(function (array $data, \App\Models\Course $record): void {
+                        $record->update(['status' => 'rejected', 'rejection_reason' => $data['rejection_reason']]);
+                    }),
+
+                // زر إضافي لإجبار الكورس على العودة لحالة الانتظار
+                Action::make('mark_pending')
+                    ->label(__('Mark Pending'))
+                    ->icon('heroicon-o-clock')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->visible(fn (\App\Models\Course $record) => in_array($record->status, ['approved', 'rejected']))
+                    ->action(function (\App\Models\Course $record) {
+                        $record->update(['status' => 'pending']);
                     }),
             ]);
     }

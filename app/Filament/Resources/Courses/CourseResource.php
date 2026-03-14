@@ -6,6 +6,7 @@ use App\Filament\Resources\Courses\Pages\CreateCourse;
 use App\Filament\Resources\Courses\Pages\EditCourse;
 use App\Filament\Resources\Courses\Pages\ListCourses;
 use App\Filament\Resources\Courses\Schemas\CourseForm;
+use App\Filament\Resources\Courses\Schemas\CourseInfolist;
 use App\Filament\Resources\Courses\Tables\CoursesTable;
 use App\Models\Course;
 use BackedEnum;
@@ -42,6 +43,11 @@ class CourseResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return CourseForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return CourseInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
