@@ -12,8 +12,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('instructor_id')->constrained('users')->cascadeOnDelete();
             $table->decimal('amount', 10, 2);
-            $table->enum('status', ['pending', 'paid', 'rejected'])->default('pending');
-            $table->timestamp('paid_at')->nullable();
+            $table->string('bank_name')->nullable();
+            $table->string('account_number')->nullable();
+            $table->string('status')->default('pending'); // pending, approved, rejected, paid
+            $table->text('admin_notes')->nullable();
             $table->timestamps();
         });
     }

@@ -10,13 +10,12 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('course_id')->constrained('courses')->cascadeOnDelete();
-            $table->foreignId('instructor_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('student_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('course_id')->constrained()->cascadeOnDelete();
+            $table->string('transaction_id')->unique();
             $table->decimal('amount', 10, 2);
-            $table->decimal('platform_commission', 10, 2);
-            $table->decimal('instructor_commission', 10, 2);
-            $table->string('payment_gateway_reference')->nullable()->comment('To be linked with payment gateway later');
+            $table->string('payment_method'); // e.g., credit_card, paypal
+            $table->string('status')->default('pending'); // pending, completed, failed, refunded
             $table->timestamps();
         });
     }

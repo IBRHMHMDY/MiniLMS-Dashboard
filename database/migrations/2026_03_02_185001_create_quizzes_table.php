@@ -10,10 +10,13 @@ return new class extends Migration
     {
         Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('course_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('lesson_id')->constrained()->cascadeOnDelete();
             $table->string('title');
-            $table->integer('pass_mark')->default(50); // درجة النجاح (من 100 مثلاً)
+            $table->text('description')->nullable();
+            $table->integer('pass_mark')->default(50);
+            $table->boolean('is_published')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

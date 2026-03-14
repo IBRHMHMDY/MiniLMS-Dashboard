@@ -41,4 +41,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Course::class, 'instructor_id');
     }
+
+    public function enrollments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function lessonProgress(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(LessonProgress::class);
+    }
 }
