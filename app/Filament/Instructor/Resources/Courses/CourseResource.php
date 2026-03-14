@@ -21,15 +21,31 @@ class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
     
-    protected static bool $shouldRegisterNavigation = false;
+    // protected static bool $shouldRegisterNavigation = false;
     
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
 
     protected static ?string $recordTitleAttribute = 'Course';
 
     protected static ?string $navigationLabel = 'My Courses';
 
     protected static ?int $navigationSort = 1;
+
+    public static function getModelLabel(): string
+    {
+        return __('Course');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('My Courses');
+    }
+
+    // إضافة هذه الدالة هامة جداً لإجبار Filament على إظهار المورد في الشريط الجانبي
+    public static function canViewAny(): bool
+    {
+        return true;
+    }
 
     public static function getEloquentQuery(): Builder
     {

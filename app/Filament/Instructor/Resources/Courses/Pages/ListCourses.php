@@ -41,7 +41,7 @@ class ListCourses extends ListRecords
     protected function getHeaderWidgets(): array
     {
         return [
-            InstructorStatsWidget::class,
+            
         ];
     }
 }

@@ -32,7 +32,6 @@ class InstructorPanelProvider extends PanelProvider
                 'primary' => Color::Indigo, // يمكنك تغيير لون اللوحة الأساسي من هنا
             ])
             ->viteTheme('resources/css/filament/instructor/theme.css')
-            ->navigation(false)
             // تخصيص زر الملف الشخصي ليقوم بإطلاق الحدث (Event)
             ->userMenuItems([
                 'profile' => \Filament\Actions\Action::make('profile')

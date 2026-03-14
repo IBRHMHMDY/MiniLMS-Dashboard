@@ -2,8 +2,6 @@
 
 namespace App\Filament\Instructor\Resources\Transactions;
 
-use App\Filament\Instructor\Resources\Transactions\Pages\CreateTransaction;
-use App\Filament\Instructor\Resources\Transactions\Pages\EditTransaction;
 use App\Filament\Instructor\Resources\Transactions\Pages\ListTransactions;
 use App\Filament\Instructor\Resources\Transactions\Schemas\TransactionForm;
 use App\Filament\Instructor\Resources\Transactions\Tables\TransactionsTable;
@@ -21,9 +19,16 @@ class TransactionResource extends Resource
 {
     protected static ?string $model = Transaction::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
 
     protected static string|UnitEnum|null $navigationGroup = 'Financials';
+
+        protected static ?int $navigationSort = 2;
+
+    public static function canViewAny(): bool
+    {
+        return true; // ضمان الظهور
+    }
 
     public static function getModelLabel(): string
     {

@@ -21,9 +21,11 @@ class PayoutRequestResource extends Resource
 {
     protected static ?string $model = PayoutRequest::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCreditCard;
 
     protected static string|UnitEnum|null $navigationGroup = 'Financials';
+
+        protected static ?int $navigationSort = 3;
 
     public static function getModelLabel(): string
     {
