@@ -19,39 +19,28 @@ class QuizForm
             ->components([
                 Section::make('Quiz Information')
                     ->schema([
-                        
-                            TextInput::make('title')
-                                ->label('Quiz Title')
-                                ->required()
-                                ->maxLength(255),
+                        TextInput::make('title')
+                            ->label('Quiz Title')
+                            ->required()
+                            ->maxLength(255),
 
-                            TextInput::make('pass_mark')
-                                ->label('Passing Grade')
-                                ->numeric()
-                                ->minValue(1)
-                                ->maxValue(100)
-                                ->suffix('%')
-                                ->required(),
-                        
+                        TextInput::make('pass_mark')
+                            ->label('Passing Grade')
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(100)
+                            ->suffix('%')
+                            ->required(),
 
                         Hidden::make('lesson_id')
                             ->default(fn (\Livewire\Component $livewire) => property_exists($livewire, 'lesson_id') ? $livewire->lesson_id : request()->query('lesson_id'))
                             ->dehydrated(true),
 
-                        Hidden::make('course_id')
-                            ->default(function (\Livewire\Component $livewire) {
-                                $lessonId = property_exists($livewire, 'lesson_id') ? $livewire->lesson_id : request()->query('lesson_id');
-                                return \App\Models\Lesson::find($lessonId)?->course_id;
-                            })
-                            ->dehydrated(true),
-
-                        // تم إزالة شرط "اختبار واحد فقط" بناءً على طلبك
                         Toggle::make('is_published')
                             ->label('Publish Quiz')
                             ->inline(false),
-                    
+                    ]), // 🚨 هنا كان القوس المفقود الذي كان سيوقف النظام!
 
-                // 2. القسم الثاني: الأسئلة والإجابات
                 Section::make('Quiz Questions & Answers')
                     ->description('Click here to manage questions for this quiz.')
                     ->icon('heroicon-o-list-bullet')
@@ -86,7 +75,6 @@ class QuizForm
                                     ->columnSpanFull()
                                     ->itemLabel(fn (array $state): ?string => $state['answer_text'] ?? null)
                                     ->collapsible()
-                                    // إضافة قاعدة التحقق (Validation Rule) لإجبار المدرب على اختيار إجابة صحيحة واحدة على الأقل
                                     ->rule(function () {
                                         return function (string $attribute, $value, \Closure $fail) {
                                             $hasCorrectAnswer = collect($value)->where('is_correct', true)->count() > 0;
@@ -100,7 +88,6 @@ class QuizForm
                             ->itemLabel(fn (array $state): ?string => $state['question_text'] ?? null)
                             ->collapsible()
                             ->defaultItems(0)
-                    ]),
                     ])->columnSpanFull(),
             ]);
     }

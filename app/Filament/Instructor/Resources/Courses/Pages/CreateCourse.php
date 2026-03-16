@@ -37,14 +37,14 @@ class CreateCourse extends CreateRecord
                 ->label('Save & Go to MyCourses'),
 
             // زر 2: الحفظ والانتقال لصفحة إضافة درس جديد
-            Action::make('save_and_add_lesson')
-                ->label('Save & Add Lesson')
+            Action::make('save_and_add_Curriculum')
+                ->label('Save & Goto Curriculum')
                 ->color('success')
                 ->icon('heroicon-o-plus-circle')
                 ->action(function () {
                     $this->create();
                     // التوجيه لمسار إنشاء الدرس (سنبنيه في الخطوة القادمة) مع تمرير ID الكورس
-                    $this->redirect('/instructor/lessons/create?course_id=' . $this->record->id);
+                    $this->redirect('/{record}/curriculum');
                 }),
 
             // زر 3: الإلغاء

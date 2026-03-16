@@ -3,14 +3,18 @@
 namespace App\Filament\Instructor\Resources\Courses\Pages;
 
 use App\Filament\Instructor\Resources\Courses\CourseResource;
+use BackedEnum;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Icons\Heroicon;
 
 class EditCourse extends EditRecord
 {
     protected static string $resource = CourseResource::class;
-
+    
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
+    
     public function getBreadcrumbs(): array
     {
         return [

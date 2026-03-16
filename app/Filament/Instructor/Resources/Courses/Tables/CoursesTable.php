@@ -3,9 +3,10 @@
 namespace App\Filament\Instructor\Resources\Courses\Tables;
 
 use App\Enums\CourseStatus;
+use App\Filament\Instructor\Resources\Courses\CourseResource;
+use App\Filament\Instructor\Resources\Lessons\LessonResource;
 use App\Models\Course;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -17,6 +18,7 @@ class CoursesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->columns([
                 ImageColumn::make('thumbnail')
                     ->label(__('Image'))
@@ -61,13 +63,19 @@ class CoursesTable
                     ->relationship('category', 'name'),
             ])
             ->recordActions([
-                EditAction::make(),
-                // سنقوم بإضافة زر "إدارة المحتوى" لاحقاً للوصول للـ Sections
-            ])
-            ->recordBulkActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+                Action::make('manage_content')
+                    ->label(__('Manage Content'))
+                    ->icon('heroicon-o-queue-list')
+                    ->color('info')
+                    ->button()
+                    // 🚨 التعديل هنا: التوجيه لصفحة curriculum
+                    ->url(fn (Course $record): string => CourseResource::getUrl('curriculum', ['record' => $record->id])),
+
+                // 2. زر تعديل إعدادات الكورس الأساسية
+                EditAction::make()
+                    ->label(__('Edit'))
+                    ->icon('heroicon-o-pencil')
+                    ->color('gray'),
             ])
             ->defaultSort('created_at', 'desc');
     }

@@ -5,6 +5,7 @@ namespace App\Filament\Instructor\Resources\Courses;
 use App\Filament\Instructor\Resources\Courses\Pages\CreateCourse as InstructorCreateCourse;
 use App\Filament\Instructor\Resources\Courses\Pages\EditCourse as InstructorEditCourse;
 use App\Filament\Instructor\Resources\Courses\Pages\ListCourses;
+use App\Filament\Instructor\Resources\Courses\Pages\ManageCourseCurriculum;
 use App\Filament\Instructor\Resources\Courses\Schemas\CourseForm;
 use App\Filament\Instructor\Resources\Courses\Schemas\CourseInfolist;
 use App\Filament\Instructor\Resources\Courses\Tables\CoursesTable;
@@ -22,7 +23,7 @@ class CourseResource extends Resource
 {
     protected static ?string $model = Course::class;
         
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookmark;
 
     protected static ?string $navigationLabel = 'My Courses';
 
@@ -66,7 +67,7 @@ public static function getEloquentQuery(): Builder
     public static function getRelations(): array
     {
         return [
-            //
+            
         ];
     }
 
@@ -76,6 +77,7 @@ public static function getEloquentQuery(): Builder
             'index' => ListCourses::route('/'),
             'create' => InstructorCreateCourse::route('/create'),
             'edit' => InstructorEditCourse::route('/{record}/edit'),
+            'curriculum' => ManageCourseCurriculum::route('/{record}/curriculum'),
         ];
     }
 }

@@ -45,11 +45,13 @@ class TransactionResource extends Resource
         return false;
     }
 
-    // 2. العزل المعماري للبيانات: إجبار الاستعلام على جلب مبيعات المدرب الحالي فقط
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->where('instructor_id', Auth::id());
+        return parent::getEloquentQuery()->whereHas('course', function (Builder $query) {
+            $query->where('instructor_id', Auth::id());
+        });
     }
+    
     public static function form(Schema $schema): Schema
     {
         return TransactionForm::configure($schema);

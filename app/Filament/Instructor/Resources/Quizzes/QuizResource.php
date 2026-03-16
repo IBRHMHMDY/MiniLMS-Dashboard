@@ -29,12 +29,12 @@ class QuizResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->whereHas('lesson.course', function (Builder $query) {
+            ->whereHas('lesson.section.course', function (Builder $query) {
                 $query->where('instructor_id', Auth::id());
             })
             ->withCount('questions')
             ->withoutGlobalScopes([
-                SoftDeletingScope::class, // ضروري جداً لعمل فلتر سلة المحذوفات
+                SoftDeletingScope::class,
             ]);
     }
 

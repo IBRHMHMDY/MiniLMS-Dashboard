@@ -34,7 +34,7 @@ class LessonResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->whereHas('course', function (Builder $query) {
+            ->whereHas('section.course', function (Builder $query) {
                 $query->where('instructor_id', Auth::id());
             })
             ->withCount('quizzes');

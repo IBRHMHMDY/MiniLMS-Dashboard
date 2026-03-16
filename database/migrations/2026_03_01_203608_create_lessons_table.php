@@ -16,12 +16,13 @@ return new class extends Migration
             $table->foreignId('section_id')->constrained()->cascadeOnDelete();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->text('description')->nullable();
+            $table->text('content')->nullable();
             $table->string('video_url')->nullable();
             $table->integer('duration_in_minutes')->default(0);
             $table->integer('sort_order')->default(0);
             $table->boolean('is_published')->default(true);
             $table->boolean('is_free_preview')->default(false);
+            $table->json('attachments')->nullable();
             $table->timestamps();
         });
     }
