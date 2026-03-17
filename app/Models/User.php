@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
@@ -19,9 +19,8 @@ class User extends Authenticatable
         'email',
         'password',
         'avatar',
-        'phone',
-        'status',
         'bio',
+        'phone_number',
     ];
 
     protected $hidden = [
@@ -37,18 +36,11 @@ class User extends Authenticatable
         ];
     }
 
+    // علاقة المدرب بكورساته
     public function coursesAsInstructor(): HasMany
     {
         return $this->hasMany(Course::class, 'instructor_id');
     }
 
-    public function enrollments(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Enrollment::class);
-    }
-
-    public function lessonProgress(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(LessonProgress::class);
-    }
+    // سيتم إضافة علاقة الـ enrollments لاحقاً عند إنشاء الـ Model
 }

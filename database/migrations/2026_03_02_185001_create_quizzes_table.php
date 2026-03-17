@@ -10,7 +10,9 @@ return new class extends Migration
     {
         Schema::create('quizzes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('lesson_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('lesson_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->foreignId('section_id')->nullable()->constrained()->cascadeOnDelete(); // تمت الإضافة للقسم
+            $table->foreignId('course_id')->nullable()->constrained()->cascadeOnDelete(); // للاختبار النهائي
             $table->string('title');
             $table->text('description')->nullable();
             $table->integer('pass_mark')->default(50);

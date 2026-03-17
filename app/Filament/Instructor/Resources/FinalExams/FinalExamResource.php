@@ -2,11 +2,9 @@
 
 namespace App\Filament\Instructor\Resources\FinalExams;
 
-
-use App\Filament\Instructor\Resources\FinalExams\Pages\ListFinalExams;
 use App\Filament\Instructor\Resources\FinalExams\Schemas\FinalExamForm;
 use App\Filament\Instructor\Resources\FinalExams\Tables\FinalExamsTable;
-use App\Models\Quiz;
+use App\Models\Course;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -18,24 +16,22 @@ use Illuminate\Support\Facades\Auth;
 
 class FinalExamResource extends Resource
 {
-    protected static ?string $model = Quiz::class;
+    protected static ?string $model = Course::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'FinalExams';
 
-    protected static bool $shouldRegisterNavigation = false;
+    protected static ?string $navigationLabel = 'Final Exams';
     
     protected static ?string $slug = 'final-exams';
+
+    protected static ?int $navigationSort = 3;
 
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->where('is_final_exam', true) // جلب الاختبارات النهائية فقط
-            ->whereHas('course', function (Builder $query) {
-                $query->where('instructor_id', Auth::id());
-            })
-            ->withCount('questions');
+            ->where('instructor_id', Auth::id());
     }
 
 
@@ -59,7 +55,9 @@ class FinalExamResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListFinalExams::route('/'),        ];
+            'index' => Pages\ListFinalExams::route('/'),
+            'edit' => Pages\EditFinalExam::route('/{record}/edit'),    
+        ];
     }
 
     public static function getRecordRouteBindingEloquentQuery(): Builder

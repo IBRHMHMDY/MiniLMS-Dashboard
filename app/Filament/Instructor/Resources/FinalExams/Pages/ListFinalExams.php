@@ -5,7 +5,6 @@ namespace App\Filament\Instructor\Resources\FinalExams\Pages;
 use App\Filament\Instructor\Resources\Courses\CourseResource;
 use App\Filament\Instructor\Resources\FinalExams\FinalExamResource;
 use App\Models\Course;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
@@ -50,17 +49,6 @@ class ListFinalExams extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            CreateAction::make()
-                ->label('Add Final Exam')
-                ->icon('heroicon-o-plus-circle')
-                ->modalWidth('full')
-                ->createAnother(false)
-                ->mutateFormDataUsing(function (array $data): array {
-                    $data['course_id'] = $this->course_id;
-                    $data['is_final_exam'] = true;
-                    return $data;
-                }),
-        ];
+        return [];
     }
 }

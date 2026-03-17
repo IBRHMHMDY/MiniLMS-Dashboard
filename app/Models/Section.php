@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Section extends Model
 {
@@ -31,5 +32,10 @@ class Section extends Model
     public function lessons(): HasMany
     {
         return $this->hasMany(Lesson::class)->orderBy('sort_order');
+    }
+
+    public function quizSection(): HasOne
+    {
+        return $this->hasOne(Quiz::class, 'section_id')->whereNull('lesson_id')->whereNull('course_id');
     }
 }

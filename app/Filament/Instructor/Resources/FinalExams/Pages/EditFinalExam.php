@@ -3,9 +3,6 @@
 namespace App\Filament\Instructor\Resources\FinalExams\Pages;
 
 use App\Filament\Instructor\Resources\FinalExams\FinalExamResource;
-use Filament\Actions\DeleteAction;
-use Filament\Actions\ForceDeleteAction;
-use Filament\Actions\RestoreAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditFinalExam extends EditRecord
@@ -14,10 +11,19 @@ class EditFinalExam extends EditRecord
 
     protected function getHeaderActions(): array
     {
+        return [];
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    protected function getFormActions(): array
+    {
         return [
-            DeleteAction::make(),
-            ForceDeleteAction::make(),
-            RestoreAction::make(),
+            $this->getSaveFormAction()->label(__('Save Exam')),
+            $this->getCancelFormAction(),
         ];
     }
 }

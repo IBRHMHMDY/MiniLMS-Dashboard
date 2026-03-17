@@ -25,7 +25,7 @@ class CourseResource extends Resource
         
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookmark;
 
-    protected static ?string $navigationLabel = 'My Courses';
+    protected static ?string $navigationLabel = 'Courses';
 
     protected static ?int $navigationSort = 1;
 

@@ -7,7 +7,6 @@ use App\Enums\CourseStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Course extends Model
@@ -15,34 +14,32 @@ class Course extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'category_id',
         'instructor_id',
+        'category_id',
         'title',
         'slug',
-        'short_description',
+        'subtitle',
         'description',
-        'thumbnail',
-        'intro_video_url',
-        'level',
-        'language',
         'price',
-        'is_free',
+        'discount_price',
+        'level',
         'status',
-        'published_at',
-        'duration_in_minutes',
+        'thumbnail',
+        'promo_video_url',
+        'requirements',
+        'what_you_will_learn',
     ];
 
-    protected $casts = [
-        'is_free' => 'boolean',
-        'price' => 'decimal:2',
-        'published_at' => 'datetime',
-        'level' => CourseLevel::class,
-        'status' => CourseStatus::class,
-    ];
-
-    public function category(): BelongsTo
+    protected function casts(): array
     {
-        return $this->belongsTo(Category::class);
+        return [
+            'price' => 'decimal:2',
+            'discount_price' => 'decimal:2',
+            'level' => CourseLevel::class,
+            'status' => CourseStatus::class,
+            'requirements' => 'array',
+            'what_you_will_learn' => 'array',
+        ];
     }
 
     public function instructor(): BelongsTo
@@ -50,8 +47,8 @@ class Course extends Model
         return $this->belongsTo(User::class, 'instructor_id');
     }
 
-    public function sections(): HasMany
+    public function category(): BelongsTo
     {
-        return $this->hasMany(Section::class)->orderBy('sort_order');
+        return $this->belongsTo(Category::class);
     }
 }

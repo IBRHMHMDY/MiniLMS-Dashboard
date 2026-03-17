@@ -39,14 +39,18 @@ class Quiz extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['course_id', 'lesson_id', 'title', 'pass_mark', 'is_published', 'is_final_exam'];
+    protected $fillable = ['course_id', 'section_id', 'lesson_id', 'title', 'pass_mark', 'is_published'];
     protected $casts = [
         'is_published' => 'boolean', // 👈 لضمان تحويله دائماً لـ true/false
-        'is_final_exam' => 'boolean', // 👈 لضمان تحويله دائماً لـ true/false
     ];
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(Section::class);
     }
 
     public function lesson()
