@@ -6,28 +6,23 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('course_id')->constrained()->cascadeOnDelete();
+            
             $table->timestamp('enrolled_at')->useCurrent();
-            $table->decimal('progress_percentage', 5, 2)->default(0.00);
-            $table->string('status')->default('active'); // active, completed, cancelled
+            $table->boolean('is_active')->default(true); // يمكن إيقاف اشتراك طالب عند استرجاع الأموال
+            
             $table->timestamps();
             
-            // منع اشتراك الطالب في نفس الكورس أكثر من مرة
-            $table->unique(['user_id', 'course_id']); 
+            // الطالب يشترك في الكورس مرة واحدة فقط
+            $table->unique(['user_id', 'course_id']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('enrollments');

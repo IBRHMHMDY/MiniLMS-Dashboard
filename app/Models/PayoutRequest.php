@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PayoutStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,21 +12,25 @@ class PayoutRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'instructor_id',
+        'user_id',
         'amount',
         'status',
-        'paid_at',
+        'instructor_notes',
+        'admin_notes',
+        'processed_at',
     ];
 
     protected function casts(): array
     {
         return [
-            'paid_at' => 'datetime',
+            'amount' => 'decimal:2',
+            'status' => PayoutStatus::class,
+            'processed_at' => 'datetime',
         ];
     }
 
-    public function instructor(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'instructor_id');
+        return $this->belongsTo(User::class);
     }
 }

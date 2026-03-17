@@ -14,14 +14,16 @@ class Enrollment extends Model
         'user_id',
         'course_id',
         'enrolled_at',
-        'progress_percentage',
-        'status',
+        'is_active',
     ];
 
-    protected $casts = [
-        'enrolled_at' => 'datetime',
-        'progress_percentage' => 'decimal:2',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'enrolled_at' => 'datetime',
+            'is_active' => 'boolean',
+        ];
+    }
 
     public function user(): BelongsTo
     {

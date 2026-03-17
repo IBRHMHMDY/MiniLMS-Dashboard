@@ -10,12 +10,16 @@ return new class extends Migration
     {
         Schema::create('payout_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('instructor_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // المدرب
+            
             $table->decimal('amount', 10, 2);
-            $table->string('bank_name')->nullable();
-            $table->string('account_number')->nullable();
-            $table->string('status')->default('pending'); // pending, approved, rejected, paid
-            $table->text('admin_notes')->nullable();
+            $table->string('status')->default('pending'); // App\Enums\PayoutStatus
+            
+            $table->text('instructor_notes')->nullable(); // تفاصيل حساب البنك للمدرب
+            $table->text('admin_notes')->nullable(); // سبب الرفض أو مرجع التحويل
+            
+            $table->timestamp('processed_at')->nullable(); // تاريخ الموافقة والتحويل
+            
             $table->timestamps();
         });
     }
