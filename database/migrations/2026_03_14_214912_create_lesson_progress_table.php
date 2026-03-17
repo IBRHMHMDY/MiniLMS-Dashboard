@@ -6,27 +6,22 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('lesson_progress', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('lesson_id')->constrained()->cascadeOnDelete();
-            $table->boolean('is_completed')->default(false);
-            $table->integer('watched_seconds')->default(0); // مفيد جداً لتطبيقات الموبايل لحفظ آخر مكان توقف عنده
+            
+            $table->timestamp('completed_at')->nullable(); // إذا كان Null فالدرس غير مكتمل
+            
             $table->timestamps();
             
-            // منع تكرار السجل لنفس الدرس ونفس المستخدم
+            // منع تكرار نفس الدرس لنفس المستخدم
             $table->unique(['user_id', 'lesson_id']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('lesson_progress');

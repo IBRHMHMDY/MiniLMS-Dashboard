@@ -2,41 +2,57 @@
 
 namespace App\Models;
 
+use App\Enums\LessonType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Lesson extends Model
+class Lesson extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
         'section_id',
         'title',
         'slug',
         'content',
+        'lesson_type',
         'video_url',
         'duration_in_minutes',
-        'sort_order',
-        'is_published',
+        'order',
         'is_free_preview',
-        'attachments',
+        'is_active',
     ];
 
-    protected $casts = [
-        'is_published' => 'boolean',
-        'is_free_preview' => 'boolean',
-        'attachments' => 'json'
-    ];
+    protected function casts(): array
+    {
+        return [
+            'lesson_type' => LessonType::class,
+            'is_free_preview' => 'boolean',
+            'is_active' => 'boolean',
+            'order' => 'integer',
+            'duration_in_minutes' => 'integer',
+        ];
+    }
 
     public function section(): BelongsTo
     {
         return $this->belongsTo(Section::class);
     }
 
-    public function quizLesson(): HasOne
+    public function progress(): HasMany
     {
-        return $this->hasOne(Quiz::class, 'lesson_id')->whereNull('section_id')->whereNull('course_id');
+        return $this->hasMany(LessonProgress::class);
+    }
+    
+    // تسجيل أنواع الملفات المرفوعة (Media Collections)
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('attachments');
+        $this->addMediaCollection('videos')->singleFile();
     }
 }

@@ -10,19 +10,18 @@ class LessonProgress extends Model
 {
     use HasFactory;
 
-    protected $table = 'lesson_progress';
-
     protected $fillable = [
         'user_id',
         'lesson_id',
-        'is_completed',
-        'watched_seconds',
+        'completed_at',
     ];
 
-    protected $casts = [
-        'is_completed' => 'boolean',
-        'watched_seconds' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'completed_at' => 'datetime',
+        ];
+    }
 
     public function user(): BelongsTo
     {
